@@ -25,7 +25,7 @@ jobs:
       - name: Checkout Documentation repo
         uses: actions/checkout@v2
         with:
-          name: ${{ inputs.repo }}
+          repository: ${{ inputs.repo }}
           ref: ${{ inputs.branch }}
           path: 'Documentation'
 
