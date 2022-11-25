@@ -9,6 +9,9 @@ on:
       branch:
         required: true
         type: string
+      token:
+        required: true
+        type: string
 
 jobs:
   push:
@@ -27,7 +30,8 @@ jobs:
         with:
           repository: ${{ inputs.repo }}
           ref: ${{ inputs.branch }}
-          path: '../../Documentation'
+          token: ${{ inputs.token }}
+          path: 'Documentation'
 
       - name: Test
         run: |
