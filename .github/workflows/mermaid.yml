@@ -27,7 +27,7 @@ jobs:
         with:
           repository: ${{ inputs.repo }}
           ref: ${{ inputs.branch }}
-          path: 'Documentation'
+          path: '../../Documentation'
 
       - name: Test
         run: |
