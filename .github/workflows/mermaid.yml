@@ -13,5 +13,5 @@ jobs:
       - name: Check for shared mermaid graphs
         id: check
         run: |
-          find . -type f -name "*.md" -print0 | xargs -L 1 awk '/"shared": ?true/,/```$/' > /tmp/${{ github.event.repository.name }}.mmd
+          find . -type f -name "*.md" -print0 | xargs -L 1 awk '/"shared": ?true/,/```$/' | sed 's/```//g' > /tmp/${{ github.event.repository.name }}.mmd
           cat /tmp/${{ github.event.repository.name }}.mmd
