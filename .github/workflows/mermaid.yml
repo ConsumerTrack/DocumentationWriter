@@ -22,7 +22,9 @@ jobs:
 
       - name: Check for shared mermaid graphs
         run: |
-          find . -type f -name "*.md" -print0 | xargs -L 1 awk '/"shared": ?true/,/```$/' | sed 's/```//g' > /tmp/${{ github.event.repository.name }}.mmd
+          find . -type f -name "*.md" -print0 | \
+            xargs -L 1 awk '/%%.*"shared": ?true/,/```$/' \
+            > /tmp/${{ github.event.repository.name }}.mmd
           cat /tmp/${{ github.event.repository.name }}.mmd
 
       - name: Checkout Documentation repo
@@ -33,7 +35,8 @@ jobs:
           token: ${{ inputs.token }}
           path: 'Documentation'
 
-      - name: Test
+      - name: Copy file to graph folder
         run: |
-          ls -la $GITHUB_WORKSPACE
+          cp /tmp/${{ github.event.repository.name }}.mmd Documentation/graphs
+          git status
         
