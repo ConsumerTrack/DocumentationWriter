@@ -36,6 +36,6 @@ jobs:
 
       - name: Copy file to graph folder
         run: |
-          cp /tmp/${{ github.event.repository.name }}.mmd Documentation/graphs
+          cp /tmp/${{ github.event.repository.name }}.mmd graphs/
           git status
         
