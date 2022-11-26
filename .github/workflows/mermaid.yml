@@ -33,7 +33,6 @@ jobs:
           repository: ${{ inputs.repo }}
           ref: ${{ inputs.branch }}
           token: ${{ inputs.token }}
-          path: 'Documentation'
 
       - name: Copy file to graph folder
         run: |
