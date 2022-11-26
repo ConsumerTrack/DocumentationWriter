@@ -37,6 +37,8 @@ jobs:
       - name: Copy file to graph folder
         run: |
           cp /tmp/${{ github.event.repository.name }}.mmd graphs/
+          git config user.name github-actions
+          git config user.email github-actions@github.com
           git add graphs
           git commit -m "automated: updating ${{github.event.repository.name}} graph from repository"
           git push origin ${{ inputs.branch }}
