@@ -27,8 +27,13 @@ jobs:
             xargs -L 1 awk '/%%.*"shared": ?true/,/```$/' \
             > /tmp/${{ github.event.repository.name }}.mmd
           cat /tmp/${{ github.event.repository.name }}.mmd
-          if [ -s /tmp/${{ github.event.repository.name }} ]; then empty=0; else empty=1; fi
-          echo "HAS_GRAPHS={empty}" >> $GITHUB_OUTPUT
+          if [ -s /tmp/${{ github.event.repository.name }} ];then
+            has_graphs=1
+          else
+            has_graphs=0
+            echo "### No mermaid graphs detected in repo :disappointed:" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "HAS_GRAPHS={has_graphs}" >> $GITHUB_OUTPUT
 
       - name: Checkout Documentation repo
         if: ${{ steps.check.outputs.HAS_GRAPHS }} == 1
@@ -47,7 +52,12 @@ jobs:
         if: ${{ steps.check.outputs.HAS_GRAPHS }} == 1
         id: diff
         run: |
-          if [[ `git status --porcelain` ]]; then changes=1; else changes=0; fi
+          if [[ `git status --porcelain` ]]; then
+            changes=1
+          else
+            changes=0
+            echo "### No mermaid graph changes detected :hurtrealbad:" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "CHANGES={changes}" >> $GITHUB_OUTPUT
 
       - name: Commit changes
