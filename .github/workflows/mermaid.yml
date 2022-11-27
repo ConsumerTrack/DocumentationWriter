@@ -21,13 +21,17 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Check for shared mermaid graphs
+        id: check
         run: |
           find . -type f -name "*.md" -print0 | \
             xargs -L 1 awk '/%%.*"shared": ?true/,/```$/' \
             > /tmp/${{ github.event.repository.name }}.mmd
           cat /tmp/${{ github.event.repository.name }}.mmd
+          if [ -s /tmp/${{ github.event.repository.name }} ]; then empty=0; else empty=1; if
+          echo "HAS_GRAPHS={empty}" >> $GITHUB_OUTPUT
 
       - name: Checkout Documentation repo
+        if: ${{ steps.check.outputs.HAS_GRAPHS }} == 1
         uses: actions/checkout@v2
         with:
           repository: ${{ inputs.repo }}
@@ -35,11 +39,23 @@ jobs:
           token: ${{ inputs.token }}
 
       - name: Copy file to graph folder
+        if: ${{ steps.check.outputs.HAS_GRAPHS }} == 1
         run: |
           cp /tmp/${{ github.event.repository.name }}.mmd graphs/
+
+      - name: Diff check
+        if: ${{ steps.check.outputs.HAS_GRAPHS }} == 1
+        id: diff
+        run: |
+          if [[ `git status --porcelain` ]]; then changes=1; else changes = 0; fi
+          echo "CHANGES={changes}" >> $GITHUB_OUTPUT
+
+      - name: Commit changes
+        if: ${{ steps.diff.outputs.CHANGES }} == 1
+        run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add graphs
           git commit -m "automated: updating ${{github.event.repository.name}} graph from repository"
           git push origin ${{ inputs.branch }}
-        
+          echo "### Sending updated mermaid graph changes to central Documentation repo :rocket:" >> $GITHUB_STEP_SUMMARY
