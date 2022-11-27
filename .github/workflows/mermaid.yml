@@ -27,16 +27,16 @@ jobs:
             xargs -L 1 awk '/%%.*"shared": ?true/,/```$/' \
             > /tmp/${{ github.event.repository.name }}.mmd
           cat /tmp/${{ github.event.repository.name }}.mmd
-          if [ -s /tmp/${{ github.event.repository.name }} ];then
-            has_graphs=1
+          if [ -s /tmp/${{ github.event.repository.name }}.mmd ];then
+            has_graphs='yes'
           else
-            has_graphs=0
+            has_graphs='no'
             echo "### No mermaid graphs detected in repo :disappointed:" >> $GITHUB_STEP_SUMMARY
           fi
           echo "HAS_GRAPHS={has_graphs}" >> $GITHUB_OUTPUT
 
       - name: Checkout Documentation repo
-        if: ${{ steps.check.outputs.HAS_GRAPHS }} == 1
+        if: steps.check.outputs.HAS_GRAPHS == 'yes'
         uses: actions/checkout@v2
         with:
           repository: ${{ inputs.repo }}
@@ -44,24 +44,24 @@ jobs:
           token: ${{ inputs.token }}
 
       - name: Copy file to graph folder
-        if: ${{ steps.check.outputs.HAS_GRAPHS }} == 1
+        if: steps.check.outputs.HAS_GRAPHS == 'yes'
         run: |
           cp /tmp/${{ github.event.repository.name }}.mmd graphs/
 
       - name: Diff check
-        if: ${{ steps.check.outputs.HAS_GRAPHS }} == 1
+        if: steps.check.outputs.HAS_GRAPHS == 'yes'
         id: diff
         run: |
           if [[ `git status --porcelain` ]]; then
-            changes=1
+            changes='yes'
           else
-            changes=0
+            changes='no'
             echo "### No mermaid graph changes detected :hurtrealbad:" >> $GITHUB_STEP_SUMMARY
           fi
           echo "CHANGES={changes}" >> $GITHUB_OUTPUT
 
       - name: Commit changes
-        if: ${{ steps.diff.outputs.CHANGES }} == 1
+        if: steps.diff.outputs.CHANGES == 'yes'
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
