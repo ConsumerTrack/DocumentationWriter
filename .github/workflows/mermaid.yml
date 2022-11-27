@@ -30,12 +30,12 @@ jobs:
           cat $file
           if [ -s $file ]; then
             has_graphs='yes'
+            echo "HAS_GRAPHS=${has_graphs}" >> $GITHUB_STEP_SUMMARY
           else
             has_graphs='no'
             echo "### No mermaid graphs detected in repo :disappointed:" >> $GITHUB_STEP_SUMMARY
           fi
           echo "HAS_GRAPHS=${has_graphs}" >> $GITHUB_OUTPUT
-          echo "HAS_GRAPHS=${has_graphs}" >> $GITHUB_STEP_SUMMARY
 
       - name: Checkout Documentation repo
         if: steps.check.outputs.HAS_GRAPHS == 'yes'
@@ -56,12 +56,12 @@ jobs:
         run: |
           if [[ `git status --porcelain` ]]; then
             changes='yes'
+            echo "CHANGES=${changes}" >> $GITHUB_STEP_SUMMARY
           else
             changes='no'
             echo "### No mermaid graph changes detected :hurtrealbad:" >> $GITHUB_STEP_SUMMARY
           fi
           echo "CHANGES=${changes}" >> $GITHUB_OUTPUT
-          echo "CHANGES=${changes}" >> $GITHUB_STEP_SUMMARY
 
       - name: Commit changes
         if: steps.diff.outputs.CHANGES == 'yes'
