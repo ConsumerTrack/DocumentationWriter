@@ -47,7 +47,7 @@ jobs:
         if: ${{ steps.check.outputs.HAS_GRAPHS }} == 1
         id: diff
         run: |
-          if [[ `git status --porcelain` ]]; then changes=1; else changes = 0; fi
+          if [[ `git status --porcelain` ]]; then changes=1; else changes=0; fi
           echo "CHANGES={changes}" >> $GITHUB_OUTPUT
 
       - name: Commit changes
