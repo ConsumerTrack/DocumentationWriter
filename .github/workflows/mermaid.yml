@@ -27,7 +27,7 @@ jobs:
             xargs -L 1 awk '/%%.*"shared": ?true/,/```$/' \
             > /tmp/${{ github.event.repository.name }}.mmd
           cat /tmp/${{ github.event.repository.name }}.mmd
-          if [ -s /tmp/${{ github.event.repository.name }} ]; then empty=0; else empty=1; if
+          if [ -s /tmp/${{ github.event.repository.name }} ]; then empty=0; else empty=1; fi
           echo "HAS_GRAPHS={empty}" >> $GITHUB_OUTPUT
 
       - name: Checkout Documentation repo
